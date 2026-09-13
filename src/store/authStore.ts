@@ -1,16 +1,5 @@
+import { User } from "@/lib/types";
 import { create } from "zustand";
-
-export interface User {
-  userId: number;
-  username: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-  totalUrls: number;
-  totalVisits: number;
-  activeUrls: number;
-  // add other profile fields
-}
 
 interface AuthState {
   user: User | null;
@@ -36,6 +25,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({
       user: null,
       loading: false,
+      isAuthenticated: false,
     }),
 
   setLoading: (loading) => {

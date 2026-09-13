@@ -6,27 +6,26 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  ChevronRight,
-  Copy,
   ExternalLink,
-  KeyRound,
   Link2,
   LogOut,
   Mail,
-  Pencil,
   ShieldCheck,
   Trash2,
   User,
   X,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-import { getDate } from "@/lib/api/helpers";
+import { getDate } from "@/lib/helpers";
 import { logoutUser } from "@/actions";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import userApis from "@/lib/api/userApis";
+import { ApiError } from "@/lib/api-error";
 
 export default function ProfilePage() {
-  // Static for now — replace with user/API data later.
-  const [username, setUsername] = useState("asifmondal");
+  const router = useRouter();
+  const [username, setUsername] = useState("");
   const [editingUsername, setEditingUsername] = useState(false);
   const [usernameDraft, setUsernameDraft] = useState(username);
   const [editingEmail, setEditingEmail] = useState(false);
@@ -34,7 +33,8 @@ export default function ProfilePage() {
 
   const [logoutDialog, setLogoutDialog] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
-  const { user, clearUser, setIsAuthenticated } = useAuthStore();
+  const { user, clearUser, setUser, setIsAuthenticated, setLoadingData } =
+    useAuthStore();
 
   const handleLogOut = async () => {
     try {
@@ -42,7 +42,7 @@ export default function ProfilePage() {
       if (res) {
         clearUser();
         setIsAuthenticated(false);
-        redirect("/login");
+        router.push("/login");
       }
     } catch (error) {
       console.log(error);
@@ -50,22 +50,57 @@ export default function ProfilePage() {
   };
 
   const saveUsername = () => {
-    if (!usernameDraft.trim()) return;
+    if (!usernameDraft.trim()) {
+      toast.error("Please enter a username !");
+      return;
+    }
 
-    setUsername(usernameDraft.trim());
-    setEditingUsername(false);
+    setLoadingData(true);
+
+    toast.promise(
+      userApis.updateProfile({
+        isUsername: true,
+        username: usernameDraft,
+      }),
+      {
+        loading: "Saving your changes...",
+        success: (res) => {
+          if (user) setUser({ ...user, username: usernameDraft });
+          setEditingUsername(false);
+          return res.message;
+        },
+        error: (error: ApiError) => error.message,
+      },
+    );
   };
 
   const cancelUsernameEdit = () => {
-    setUsernameDraft(username);
     setEditingUsername(false);
   };
 
   const saveEmail = () => {
-    if (!emailDraft.trim()) return;
+    if (!emailDraft.trim()) {
+      toast.error("Please enter a valid email !");
+      return;
+    }
 
-    // setUsername(usernameDraft.trim());
-    setEditingEmail(false);
+    setLoadingData(true);
+
+    toast.promise(
+      userApis.updateProfile({
+        isUsername: false,
+        email: emailDraft,
+      }),
+      {
+        loading: "Saving your changes...",
+        success: (res) => {
+          if (user) setUser({ ...user, email: emailDraft });
+          setEditingEmail(false);
+          return res.message;
+        },
+        error: (error: ApiError) => error.message,
+      },
+    );
   };
 
   const cancelEmailEdit = () => {
@@ -131,20 +166,20 @@ export default function ProfilePage() {
             <ProfileStat
               icon={<Link2 size={18} />}
               label="Total links"
-              value={user?.totalUrls?.toString() ?? ""}
+              value={user?.totalUrls?.toString() ?? "0"}
             />
 
             <ProfileStat
               icon={<Check size={18} />}
               label="Active links"
-              value={user?.activeUrls.toString() || ""}
+              value={user?.activeUrls?.toString() || "0"}
               border
             />
 
             <ProfileStat
               icon={<ExternalLink size={18} />}
               label="Total visits"
-              value={user?.totalVisits.toString() || ""}
+              value={user?.totalVisits?.toString() || "0"}
               border
             />
           </section>
@@ -210,7 +245,6 @@ export default function ProfilePage() {
 
               <InfoRow
                 icon={<Mail size={18} />}
-                // description="Email management can be added when email support is introduced."
                 label="Email"
                 view={
                   editingEmail ? (
@@ -262,18 +296,6 @@ export default function ProfilePage() {
                     </button>
                   )
                 }
-
-                // action={
-                //   <button
-                //     onClick={() => {
-                //       setUsernameDraft(user?.username || "");
-                //       setEditingUsername(true);
-                //     }}
-                //     className="text-sm font-medium text-[#735b25] underline decoration-[#cdbb8f] underline-offset-4 hover:text-[#3c2d11]"
-                //   >
-                //     Edit
-                //   </button>
-                // }
               />
 
               <InfoRow
@@ -433,7 +455,6 @@ export default function ProfilePage() {
           destructive
           onCancel={() => setDeleteDialog(false)}
           onConfirm={() => {
-            // TODO: delete account API
             setDeleteDialog(false);
           }}
         />

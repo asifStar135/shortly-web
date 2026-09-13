@@ -1,8 +1,10 @@
 "use client";
+import { ApiError } from "@/lib/api-error";
 import userApis from "@/lib/api/userApis";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import React, { SubmitEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
@@ -16,17 +18,20 @@ const RegisterForm = () => {
     event.preventDefault();
 
     setLoading(true);
-    try {
-      const res = await userApis.registerUser({ username, email, password });
-      if (res?.username) {
-        setIsAuthenticated(true);
-      }
-      router.push("/home");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+
+    toast.promise(userApis.registerUser({ username, email, password }), {
+      loading: "We're saving your details, please wait...",
+      error: (error: ApiError) => {
+        return error.message;
+      },
+      success: (data) => {
+        setTimeout(() => {
+          navigation.navigate("/home");
+        }, 300);
+        return data.message;
+      },
+      finally: () => setLoading(false),
+    });
   };
 
   useEffect(() => {

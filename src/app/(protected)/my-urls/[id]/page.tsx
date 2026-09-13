@@ -5,7 +5,6 @@ import {
   ArrowLeft,
   Check,
   Copy,
-  ExternalLink,
   Pencil,
   Power,
   Trash2,
@@ -19,12 +18,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import UrlApis from "@/lib/api/UrlApis";
-import { redirect, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { editActions, UrlItem } from "@/lib/types";
-import { getDate, validateUrl } from "@/lib/api/helpers";
+import { getDate, validateUrl } from "@/lib/helpers";
 import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/shared/ConfirmDialog";
 import { useAuthStore } from "@/store/authStore";
+import { ApiError } from "@/lib/api-error";
 
 export default function ShortUrlDetailsPage() {
   const { loadingData, setLoadingData } = useAuthStore();
@@ -43,14 +43,19 @@ export default function ShortUrlDetailsPage() {
   const [openDisableModal, setOpenDisableModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const params = useParams();
+  const router = useRouter();
 
   const fetchUrlDetails = async () => {
+    setLoadingData(true);
+
     try {
-      setLoadingData(true);
       const details = await UrlApis.fetchUrlById(Number(params.id));
-      setUrlDetails(details);
+      setUrlDetails(details.data);
     } catch (error) {
-      console.log(error);
+      setTimeout(() => {
+        router.push("/my-urls");
+      }, 300);
+      toast.error((error as ApiError)?.message);
     } finally {
       setLoadingData(false);
     }
@@ -58,7 +63,7 @@ export default function ShortUrlDetailsPage() {
 
   const handleSaveName = async () => {
     if (!titleDraft?.trim()) {
-      toast.warning("Please enter a valid title");
+      toast.warning("Title cannot be empty!");
       return;
     }
 
@@ -69,12 +74,12 @@ export default function ShortUrlDetailsPage() {
     toast.promise(
       UrlApis.editUrlData(urlDetails?.id || 0, editActions.title, dataToUpdate),
       {
-        success: () => {
+        success: (res) => {
           fetchUrlDetails();
-          return "Saving done";
+          return res.message;
         },
-        error: "Save failed",
-        loading: "Loading in progress",
+        error: (error: ApiError) => error.message,
+        loading: "Saving your changes...",
         finally: () => setLoadingData(false),
       },
     );
@@ -104,12 +109,12 @@ export default function ShortUrlDetailsPage() {
         dataToUpdate,
       ),
       {
-        success: () => {
+        success: (res) => {
           fetchUrlDetails();
-          return "Saving done";
+          return res.message;
         },
-        error: "Save failed",
-        loading: "Loading in progress",
+        error: (error: ApiError) => error.message,
+        loading: "Saving your changes...",
         finally: () => setLoadingData(false),
       },
     );
@@ -130,12 +135,12 @@ export default function ShortUrlDetailsPage() {
         dataToUpdate,
       ),
       {
-        success: () => {
+        success: (res) => {
           fetchUrlDetails();
-          return "Saving done";
+          return res.message;
         },
-        error: "Save failed",
-        loading: "Loading in progress",
+        error: (error: ApiError) => error.message,
+        loading: "Saving your changes...",
         finally: () => setLoadingData(false),
       },
     );
@@ -156,12 +161,12 @@ export default function ShortUrlDetailsPage() {
         {},
       ),
       {
-        loading: "Update in progress",
-        success: () => {
+        loading: "Saving your changes...",
+        success: (res) => {
           fetchUrlDetails();
-          return "Data saved";
+          return res.message;
         },
-        error: "Saving failed",
+        error: (error: ApiError) => error.message,
         finally: () => setLoadingData(false),
       },
     );
@@ -171,20 +176,21 @@ export default function ShortUrlDetailsPage() {
   const confirmDelete = () => {
     setLoadingData(true);
 
-    // TODO: call delete API
     toast.promise(UrlApis.deleteUrl(urlDetails?.id), {
-      loading: "Delete in progress",
-      success: () => {
-        redirect("/my-urls");
-        return "URL deleted";
+      loading: "Saving your changes...",
+      success: (res) => {
+        setTimeout(() => {
+          router.push("/my-urls");
+        }, 500);
+        return res.message;
       },
-      error: "Saving failed",
+
+      error: (error: ApiError) => error.message,
       finally: () => setLoadingData(false),
     });
     setOpenDeleteModal(false);
   };
 
-  // Static data for now
   const shortUrl = useMemo(() => {
     return `${process.env.NEXT_PUBLIC_CLIENT_URL ?? ""}${urlDetails?.shortCode ?? ""}`;
   }, [urlDetails, process.env.NEXT_PUBLIC_CLIENT_URL]);

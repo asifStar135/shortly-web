@@ -1,7 +1,3 @@
-// components/Loading.tsx
-
-import React from "react";
-
 const Loading = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-[#f8f0e0]">

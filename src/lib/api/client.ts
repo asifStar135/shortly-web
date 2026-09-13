@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-// Create a centralized Axios instance
+// centralized Axios instance
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -14,9 +14,6 @@ const axiosInstance: AxiosInstance = axios.create({
 // Global request interceptor (e.g., for adding Auth tokens dynamically)
 axiosInstance.interceptors.request.use(
   (config) => {
-    // If you use client-side tokens (like localStorage or cookies)
-    // const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => Promise.reject(error),
@@ -26,17 +23,14 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Custom error formatting to replace the native fetch response.ok check
-    const status = error.response?.status || "Unknown";
-    const message =
-      error.response?.data?.message || error.message || "API Error";
+    const message = error.response?.data?.message || "API Error";
 
-    return Promise.reject(new Error(`API Error [${status}]: ${message}`));
+    return Promise.reject(new Error(message));
   },
 );
 
 /**
- * Core apiClient wrapper matching your original signature
+ * Core apiClient wrapper matching original signature
  */
 export async function apiClient<T>(
   endpoint: string,
