@@ -1,13 +1,15 @@
 "use client";
 
-import { getDate, validateUrl } from "@/lib/api/helpers";
+import { getDate, validateUrl } from "@/lib/helpers";
 import UrlApis from "@/lib/api/UrlApis";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ApiError } from "@/lib/api-error";
 
 export default function CreateUrlForm() {
+  const router = useRouter();
   const [title, setTitle] = useState("Untitled url");
   const [url, setUrl] = useState("");
   const [isNever, setIsNever] = useState(true);
@@ -16,7 +18,6 @@ export default function CreateUrlForm() {
   );
 
   const { setLoadingData } = useAuthStore();
-  const router = useRouter();
 
   const handleUrlChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = event.target;
@@ -28,11 +29,11 @@ export default function CreateUrlForm() {
   };
 
   const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (!validateUrl(url)) {
-      toast.warning("Please enter a valid url");
+      toast.error("Please enter a valid url");
       return;
     }
-    event.preventDefault();
     setLoadingData(true);
 
     toast.promise(
@@ -45,13 +46,11 @@ export default function CreateUrlForm() {
         loading: "Creating short url...",
         success: (res) => {
           setTimeout(() => {
-            if (res.id) {
-              router.push(`/my-urls/${res.id}`);
-            }
+            router.push(`/my-urls/${res.data?.id}`);
           }, 500);
           return "Short url created successfully";
         },
-        error: "Failed creating short url",
+        error: (error: ApiError) => error.message,
         finally: () => setLoadingData(false),
       },
     );

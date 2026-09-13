@@ -5,7 +5,7 @@ import { useState } from "react";
 import { ChevronDown, Link2, LogOut, Menu, User, X } from "lucide-react";
 import { logoutUser } from "@/actions";
 import { useAuthStore } from "@/store/authStore";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: "Create URL", href: "/shorten" },
@@ -14,6 +14,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { clearUser, setIsAuthenticated } = useAuthStore();
@@ -24,7 +25,7 @@ export default function Navbar() {
       if (res) {
         clearUser();
         setIsAuthenticated(false);
-        redirect("/login");
+        router.push("/login");
       }
     } catch (error) {
       console.log(error);

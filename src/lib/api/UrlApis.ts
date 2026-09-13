@@ -1,4 +1,4 @@
-import { editActions } from "../types";
+import { APIResponse, editActions, UrlItem } from "../types";
 import { apiClient } from "./client";
 
 export default {
@@ -11,21 +11,28 @@ export default {
     url: string;
     expiryDate: Date | null;
   }) => {
-    return apiClient<any>("/api/url/create", {
+    const res: APIResponse<UrlItem> = await apiClient("/api/url/create", {
       method: "POST",
       data: JSON.stringify({ title, longUrl: url, expires: expiryDate }),
     });
+
+    return res;
   },
 
   fetchAllUrls: async () => {
-    return apiClient<any>("/api/url/all", {
+    const response: APIResponse<UrlItem[]> = await apiClient("/api/url/all", {
       method: "GET",
     });
+
+    return response.data;
   },
+
   fetchUrlById: async (url_id: number) => {
-    return apiClient<any>("/api/url/" + url_id, {
+    const res: APIResponse<UrlItem> = await apiClient("/api/url/" + url_id, {
       method: "GET",
     });
+
+    return res;
   },
 
   editUrlData: async (
@@ -33,33 +40,19 @@ export default {
     editAction?: editActions,
     dataToUpdate?: any,
   ) => {
-    return apiClient<any>("/api/url/" + urlId, {
+    const res: APIResponse<UrlItem> = await apiClient("/api/url/" + urlId, {
       method: "PUT",
       data: { editAction: editAction, ...dataToUpdate },
     });
-  },
 
-  disableUrl: async (shortcode: string) => {
-    return apiClient("/api/url/disable", {
-      method: "PUT",
-      data: {
-        shortcode,
-      },
-    });
-  },
-
-  enableUrl: async (shortcode: string) => {
-    return apiClient("/api/url/enable", {
-      method: "PUT",
-      data: {
-        shortcode,
-      },
-    });
+    return res;
   },
 
   deleteUrl: async (urlId?: number) => {
-    return apiClient("/api/url/" + urlId, {
+    const res: APIResponse<null> = await apiClient("/api/url/" + urlId, {
       method: "DELETE",
     });
+
+    return res;
   },
 };

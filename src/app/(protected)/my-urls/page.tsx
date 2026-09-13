@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import UrlApis from "@/lib/api/UrlApis";
-import { getDate } from "@/lib/api/helpers";
+import { getDate } from "@/lib/helpers";
 import { UrlItem } from "@/lib/types";
 
 const ITEMS_PER_PAGE = 10;
@@ -29,7 +29,6 @@ export default function MyUrlsPage() {
   const { setLoading } = useAuthStore();
 
   const fetchUrlItems = async () => {
-    console.log("fetch");
     setLoading(true);
     setLoading(false);
 

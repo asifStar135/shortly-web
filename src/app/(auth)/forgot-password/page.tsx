@@ -1,16 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Mail } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, Mail, LockKeyhole } from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "sonner";
+import userApis from "@/lib/api/userApis";
+import { ApiError } from "@/lib/api-error";
+import { redirect } from "next/navigation";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: React.SubmitEvent) => {
+  // false = email step, true = reset password step
+  const [isCodeStep, setIsCodeStep] = useState(false);
+
+  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: call forgot-password API
+    toast.promise(userApis.forgotPassword(email), {
+      loading: "Please hang on for a moment...",
+      success: (res) => {
+        setIsCodeStep(true);
+        return res.message;
+      },
+      error: (error: ApiError) => {
+        return error.message;
+      },
+    });
+  };
+
+  const handleResetSubmit = (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    toast.promise(
+      userApis.resetPassword({
+        email,
+        code,
+        newPassword,
+      }),
+      {
+        loading: "Resetting your password...",
+        success: (res) => {
+          setTimeout(() => {
+            redirect("/login");
+          }, 300);
+          return res.message;
+        },
+        error: (error: ApiError) => {
+          return error.message;
+        },
+      },
+    );
   };
 
   return (
@@ -20,54 +68,149 @@ export default function ForgotPasswordPage() {
           {/* Heading */}
           <div className="mb-10 text-center">
             <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full border border-[#d8cfbd] bg-white/30">
-              <Mail size={22} strokeWidth={1.7} className="text-[#3c2d11]" />
+              {isCodeStep ? (
+                <LockKeyhole
+                  size={22}
+                  strokeWidth={1.7}
+                  className="text-[#3c2d11]"
+                />
+              ) : (
+                <Mail size={22} strokeWidth={1.7} className="text-[#3c2d11]" />
+              )}
             </div>
 
             <h1 className="text-3xl font-semibold tracking-tight">
-              Forgot your password?
+              {isCodeStep ? "Reset your password" : "Forgot your password?"}
             </h1>
 
             <p className="mt-3 text-sm leading-6 text-gray-500">
-              No worries. Enter your email and we&apos;ll help you get back into
-              your account.
+              {isCodeStep
+                ? `Enter the verification code sent to ${email} and choose a new password.`
+                : "No worries. Enter your email and we'll help you get back into your account."}
             </p>
           </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="email" className="mb-2 block text-sm font-medium">
-                Email address
-              </label>
+          {/* Step 1: Email */}
+          {!isCodeStep ? (
+            <form onSubmit={handleEmailSubmit} className="space-y-5">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Email address
+                </label>
 
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="h-12 w-full rounded-xl border border-[#d8cfbd] bg-white/40 px-4 text-sm outline-none transition focus:border-[#3c2d11] focus:bg-white/60"
-              />
-            </div>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="h-12 w-full rounded-xl border border-[#d8cfbd] bg-white/40 px-4 text-sm outline-none transition focus:border-[#3c2d11] focus:bg-white/60"
+                />
+              </div>
 
-            <button
-              type="submit"
-              className="h-12 w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
-            >
-              Send reset link
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="h-12 w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
+              >
+                Send reset code
+              </button>
+            </form>
+          ) : (
+            /* Step 2: Code + New Password */
+            <form onSubmit={handleResetSubmit} className="space-y-5">
+              <div>
+                <label
+                  htmlFor="code"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Verification code
+                </label>
+
+                <input
+                  id="code"
+                  type="text"
+                  required
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  placeholder="Enter the code"
+                  autoComplete="one-time-code"
+                  className="h-12 w-full rounded-xl border border-[#d8cfbd] bg-white/40 px-4 text-sm tracking-widest outline-none transition focus:border-[#3c2d11] focus:bg-white/60"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="newPassword"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  New password
+                </label>
+
+                <input
+                  id="newPassword"
+                  type="password"
+                  required
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Enter new password"
+                  autoComplete="new-password"
+                  className="h-12 w-full rounded-xl border border-[#d8cfbd] bg-white/40 px-4 text-sm outline-none transition focus:border-[#3c2d11] focus:bg-white/60"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="confirmPassword"
+                  className="mb-2 block text-sm font-medium"
+                >
+                  Confirm password
+                </label>
+
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm new password"
+                  autoComplete="new-password"
+                  className="h-12 w-full rounded-xl border border-[#d8cfbd] bg-white/40 px-4 text-sm outline-none transition focus:border-[#3c2d11] focus:bg-white/60"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="h-12 w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
+              >
+                Reset password
+              </button>
+            </form>
+          )}
 
           {/* Back */}
           <div className="mt-8 text-center">
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#3c2d11]"
-            >
-              <ArrowLeft size={15} />
-              Back to login
-            </Link>
+            {isCodeStep ? (
+              <button
+                type="button"
+                onClick={() => setIsCodeStep(false)}
+                className="inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#3c2d11]"
+              >
+                <ArrowLeft size={15} />
+                Change email
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#3c2d11]"
+              >
+                <ArrowLeft size={15} />
+                Back to login
+              </Link>
+            )}
           </div>
         </div>
       </div>

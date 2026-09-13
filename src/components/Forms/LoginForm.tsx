@@ -1,9 +1,11 @@
 "use client";
 
-import React, { SubmitEvent, useEffect, useState } from "react";
+import { SubmitEvent, useEffect, useState } from "react";
 import userApis from "@/lib/api/userApis";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import { ApiError } from "@/lib/api-error";
+import { toast } from "sonner";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
@@ -13,21 +15,23 @@ const LoginForm = () => {
   const router = useRouter();
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
-    console.log({ username, password });
     event.preventDefault();
 
     setLoading(true);
-    try {
-      const res = await userApis.loginUser({ username, password });
-      if (res?.username) {
-        setIsAuthenticated(true);
-      }
-      if (location.pathname.includes("login")) router.push("/home");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
+
+    toast.promise(userApis.loginUser({ username, password }), {
+      loading: "Welcome back! Just a moment...",
+      error: (error: ApiError) => {
+        return error.message;
+      },
+      success: (data) => {
+        setTimeout(() => {
+          navigation.navigate("/home");
+        }, 300);
+        return data.message;
+      },
+      finally: () => setLoading(false),
+    });
   };
 
   useEffect(() => {

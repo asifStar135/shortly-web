@@ -7,7 +7,5 @@ export async function logoutUser() {
   const cookieStore = await cookies();
   cookieStore.delete("access_token");
 
-  //   redirect("/login");
-
   return true;
 }
