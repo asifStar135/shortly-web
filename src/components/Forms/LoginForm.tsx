@@ -3,15 +3,14 @@
 import { SubmitEvent, useEffect, useState } from "react";
 import userApis from "@/lib/api/userApis";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { ApiError } from "@/lib/api-error";
 import { toast } from "sonner";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsAuthenticated, setLoading, loading, isAuthenticated } =
-    useAuthStore();
+  const { setLoading, loading, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -26,7 +25,7 @@ const LoginForm = () => {
       },
       success: (data) => {
         setTimeout(() => {
-          navigation.navigate("/home");
+          redirect("/home");
         }, 300);
         return data.message;
       },

@@ -2,16 +2,15 @@
 import { ApiError } from "@/lib/api-error";
 import userApis from "@/lib/api/userApis";
 import { useAuthStore } from "@/store/authStore";
-import { useRouter } from "next/navigation";
-import React, { SubmitEvent, useEffect, useState } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { SubmitEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const RegisterForm = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsAuthenticated, setLoading, loading, isAuthenticated } =
-    useAuthStore();
+  const { setLoading, loading, isAuthenticated } = useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (event: SubmitEvent) => {
@@ -26,7 +25,7 @@ const RegisterForm = () => {
       },
       success: (data) => {
         setTimeout(() => {
-          navigation.navigate("/home");
+          redirect("/home");
         }, 300);
         return data.message;
       },
