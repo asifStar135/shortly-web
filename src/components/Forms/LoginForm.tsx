@@ -10,7 +10,8 @@ import { toast } from "sonner";
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setLoading, loading, isAuthenticated } = useAuthStore();
+  const { setLoading, loading, isAuthenticated, setIsAuthenticated } =
+    useAuthStore();
   const router = useRouter();
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
@@ -24,9 +25,11 @@ const LoginForm = () => {
         return error.message;
       },
       success: (data) => {
+        setIsAuthenticated(true);
         setTimeout(() => {
           redirect("/home");
         }, 300);
+
         return data.message;
       },
       finally: () => setLoading(false),

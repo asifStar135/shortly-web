@@ -25,7 +25,7 @@ export default function MyUrlsPage() {
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [copiedId, setCopiedId] = useState<number | null>(null);
-  const [urlItems, setUrlItems] = useState<any[]>([]);
+  const [urlItems, setUrlItems] = useState<UrlItem[]>([]);
   const { setLoading } = useAuthStore();
 
   const fetchUrlItems = async () => {
@@ -54,13 +54,13 @@ export default function MyUrlsPage() {
         url?.longUrl?.toLowerCase()?.includes(search.toLowerCase());
 
       const matchesStatus =
-        status === "All" || url?.active == (status == "Active");
+        status === "All" || url?.isActive == (status == "Active");
 
       return matchesSearch && matchesStatus;
     });
 
     return [...result].sort((a, b) => {
-      if (sort === "visits") return b?.visit - a?.visit;
+      if (sort === "visits") return b?.total_visit - a?.total_visit;
       if (sort === "oldest") return a?.id - b?.id;
 
       if (sort === "name") return a?.title?.localeCompare(b?.title);
@@ -103,9 +103,12 @@ export default function MyUrlsPage() {
     }, 2000);
   };
 
-  const activeCount = urlItems.filter((url) => url?.active === true).length;
+  const activeCount = urlItems.filter((url) => url?.isActive === true).length;
 
-  const totalVisits = urlItems.reduce((sum, url) => sum + url?.visit, 0);
+  const totalVisits = urlItems.reduce(
+    (sum, url: UrlItem) => sum + url?.total_visit,
+    0,
+  );
 
   return (
     <main className="min-h-screen bg-[#f8f0df] text-[#111111]">
@@ -291,16 +294,16 @@ export default function MyUrlsPage() {
                           <span className="inline-flex items-center gap-2 text-sm text-gray-600">
                             <span
                               className={`h-2 w-2 rounded-full ${
-                                url.active ? "bg-green-600" : "bg-gray-400"
+                                url.isActive ? "bg-green-600" : "bg-gray-400"
                               }`}
                             />
-                            {url.active ? "Active" : "Inactive"}
+                            {url.isActive ? "Active" : "Inactive"}
                           </span>
                         </td>
 
                         {/* Visits */}
                         <td className="px-5 py-5 text-sm font-medium">
-                          {url?.visit?.toLocaleString()}
+                          {url?.today_visit?.toLocaleString()}
                         </td>
 
                         {/* Created */}

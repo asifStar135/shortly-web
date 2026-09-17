@@ -4,8 +4,19 @@ export type UrlItem = {
   shortCode: string;
   expiresAt?: string | null;
   title: string;
-  active: boolean;
-  visit: number;
+  isActive: boolean;
+  total_visit: number;
+  unique_visit?: number;
+  today_visit?: number;
+  city_visits?: {
+    city: string;
+    country: string;
+    count: number;
+  }[];
+  device_visits?: {
+    deviceType: string;
+    count: number;
+  }[];
   createdAt: string;
   updatedAt?: string;
 };

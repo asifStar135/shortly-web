@@ -1,7 +1,6 @@
 "use client";
 
 import { useAuthStore } from "@/store/authStore";
-import LoginPage from "@/app/(auth)/login/page";
 import Loading from "../Loading";
 import { redirect } from "next/navigation";
 
