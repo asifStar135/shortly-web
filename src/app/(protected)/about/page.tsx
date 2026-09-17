@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   ArrowRight,
@@ -16,25 +14,25 @@ import Linkedin from "@/components/ui/icons/Linkedin";
 
 const projects = [
   {
-    name: "Project One",
+    name: "Quick drive - car rental platform",
     description:
-      "A full-stack application focused on building a clean and scalable user experience.",
-    technologies: ["Next.js", "TypeScript", "Node.js"],
-    url: "#",
+      "Premium car rental service with a wide selection of luxury and everyday vehicles for all your driving needs.",
+    technologies: ["React.js", "Typescript", "Node.js", "MongoDB"],
+    url: "https://car-rental-mdasif.vercel.app/",
   },
   {
-    name: "Project Two",
+    name: "Flav-Ur a recipe companion",
     description:
-      "A practical product built with modern web technologies and production-focused architecture.",
-    technologies: ["React", "Node.js", "MongoDB"],
-    url: "#",
+      "A recipe discovery and cookbook web-app for search, save, and manage recipes while adding custom notes for a personalized cooking experience.",
+    technologies: ["Next.js", "Clerk-auth", "MongoDB", "TailwindCSS"],
+    url: "https://flav-ur-asif.vercel.app",
   },
   {
-    name: "Project Three",
+    name: "Sign languagge detector",
     description:
-      "An application exploring efficient APIs, data management and modern frontend patterns.",
-    technologies: ["Next.js", "GraphQL", "AWS"],
-    url: "#",
+      "Real-time hand gesture recognition system designed for the hearing-impaired and non-verbal individuals and help them communicate.",
+    technologies: ["React.js", "YOLOv5", "Tensorflow.js"],
+    url: "https://sign-language-detector-ae17.onrender.com/",
   },
 ];
 
@@ -82,8 +80,8 @@ const roadmap = [
   },
   {
     title: "Analytics",
-    description: "Understand visits and visitor behaviour.",
-    completed: false,
+    description: "Analyze your visitors region and device types.",
+    completed: true,
   },
   {
     title: "QR codes",
@@ -553,7 +551,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
           />
         </div>
 
-        <p className="mt-4 text-sm leading-6 text-gray-500">
+        <p className="my-4 text-sm leading-6 text-gray-500">
           {project.description}
         </p>
       </div>

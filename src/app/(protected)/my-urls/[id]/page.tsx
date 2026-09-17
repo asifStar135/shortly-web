@@ -9,8 +9,6 @@ import {
   Power,
   Trash2,
   BarChart3,
-  Globe2,
-  Monitor,
   QrCode,
   ExternalLinkIcon,
   PenLine,
@@ -25,6 +23,15 @@ import { toast } from "sonner";
 import ConfirmDialog from "@/components/ui/shared/ConfirmDialog";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/lib/api-error";
+import { Smartphone, MapPin, MoreHorizontal } from "lucide-react";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function ShortUrlDetailsPage() {
   const { loadingData, setLoadingData } = useAuthStore();
@@ -306,7 +313,7 @@ export default function ShortUrlDetailsPage() {
               <div className="mt-6 flex justify-center gap-10">
                 <button
                   onClick={() =>
-                    urlDetails?.active
+                    urlDetails?.isActive
                       ? setOpenDisableModal(true)
                       : confirmEnableDisable(true)
                   }
@@ -314,7 +321,7 @@ export default function ShortUrlDetailsPage() {
                   className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-gray-300 bg-white/30 px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/60 hover:border-gray-500"
                 >
                   <Power size={16} />
-                  {urlDetails?.active ? "Disable" : "Enable"}
+                  {urlDetails?.isActive ? "Disable" : "Enable"}
                 </button>
 
                 <button
@@ -380,11 +387,6 @@ export default function ShortUrlDetailsPage() {
                   >
                     <PenLine size={20} />
                   </button>
-
-                  {/* <ExternalLink
-                    size={18}
-                    className="mt-1 shrink-0 text-gray-400"
-                  /> */}
                 </div>
               )}
             </div>
@@ -394,11 +396,11 @@ export default function ShortUrlDetailsPage() {
               <span className="flex items-center gap-2">
                 <span
                   className={`h-2 w-2 rounded-full ${
-                    urlDetails?.active ? "bg-green-600" : "bg-gray-400"
+                    urlDetails?.isActive ? "bg-green-600" : "bg-gray-400"
                   }`}
                 />
                 <strong className="font-medium text-gray-700">
-                  {urlDetails?.active ? "Active" : "Disabled"}
+                  {urlDetails?.isActive ? "Active" : "Disabled"}
                 </strong>
               </span>
 
@@ -510,50 +512,8 @@ export default function ShortUrlDetailsPage() {
                   </div>
                 )}
               </div>
-              {/* <div className="border-primary/30 flex items-center gap-4 p-2 rounded-lg border ">
-                <span>
-                  Expires :{" "}
-                  <strong className="font-semibold text-primary">
-                    {urlDetails?.expiresAt
-                      ? getDate(urlDetails?.expiresAt)
-                      : "Never"}
-                  </strong>
-                </span>
-
-                <button
-                  onClick={() => {
-                    setEditingExpiry(true)
-                    setExpiryDraft()
-                  }}
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-white/60 hover:text-black"
-                  aria-label="Edit expiry date"
-                >
-                  <PenLine size={15} />
-                </button>
-              </div> */}
             </div>
           </div>
-
-          {/* Actions */}
-          {/* <div className="flex flex-wrap items-center gap-3 border-b border-gray-300/70 py-7">
-            <button className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/30 px-5 py-2.5 text-sm font-medium transition-all hover:border-gray-500 hover:bg-white/60">
-              <Pencil size={16} />
-              Edit
-            </button>
-
-            <button
-              onClick={() => setActive(!active)}
-              className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/30 px-5 py-2.5 text-sm font-medium transition-all hover:border-gray-500 hover:bg-white/60"
-            >
-              <Power size={16} />
-              {active ? "Disable" : "Enable"}
-            </button>
-
-            <button className="inline-flex items-center gap-2 rounded-full border border-red-200 px-5 py-2.5 text-sm font-medium text-red-600 transition-all hover:border-red-400 hover:bg-red-50">
-              <Trash2 size={16} />
-              Delete
-            </button>
-          </div> */}
 
           {/* Analytics */}
           <div className="pt-16">
@@ -579,50 +539,201 @@ export default function ShortUrlDetailsPage() {
             <div className="grid grid-cols-1 border border-gray-300/70 sm:grid-cols-3">
               <Stat
                 label="Total visits"
-                value={urlDetails?.visit?.toLocaleString() || ""}
+                value={urlDetails?.total_visit?.toLocaleString() || "-"}
                 description="All time"
               />
 
               <Stat
                 label="Unique visitors"
-                value={"20"}
+                value={urlDetails?.unique_visit?.toLocaleString() || "-"}
                 description="Estimated unique users"
                 border
               />
 
               <Stat
                 label="Today's visits"
-                value={"5"}
+                value={urlDetails?.today_visit?.toLocaleString() || "-"}
                 description="Since midnight"
                 border
               />
             </div>
 
-            {/* Coming Soon Analytics */}
-            <div className="mt-8 grid gap-6 md:grid-cols-2">
-              <ComingSoonCard
-                icon={<BarChart3 size={22} />}
-                title="Visits over time"
-                description="Track clicks and visitor activity across days, weeks and months."
-              />
+            {/* Additional Analytics */}
+            <div className="mt-8 grid gap-15 md:grid-cols-2 lg:grid-cols-3">
+              {/* Device Analytics */}
+              <div className="rounded-2xl border border-[#d8cfbd] bg-white/40 p-5">
+                <div className="mb-5 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#3c2d11]">
+                      Visits by device
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Devices used to access your URL
+                    </p>
+                  </div>
 
-              <ComingSoonCard
-                icon={<Globe2 size={22} />}
-                title="Visitor locations"
-                description="See where your visitors are coming from around the world."
-              />
+                  <Smartphone
+                    size={20}
+                    strokeWidth={1.7}
+                    className="text-[#3c2d11]"
+                  />
+                </div>
 
-              <ComingSoonCard
-                icon={<Monitor size={22} />}
-                title="Devices & browsers"
-                description="Understand how people access your short link."
-              />
+                {/* Primary device */}
+                <div className="rounded-xl border border-[#d8cfbd] bg-[#f8f0df]/70 p-4">
+                  <p className="text-center text-2xl font-semibold text-[#3c2d11]">
+                    {urlDetails?.device_visits?.length
+                      ? urlDetails.device_visits[0].count
+                      : "--"}
+                  </p>
+                  <p className="text-center mt-1 text-xs uppercase tracking-wide text-gray-500">
+                    {urlDetails?.device_visits?.length
+                      ? urlDetails?.device_visits[0]?.deviceType
+                      : null}
+                  </p>
+                </div>
 
-              <ComingSoonCard
-                icon={<QrCode size={22} />}
-                title="QR code"
-                description="Generate and download a QR code for this short link."
-              />
+                <Dialog>
+                  {urlDetails?.device_visits?.length ? (
+                    <DialogTrigger className="mt-3 flex h-9 w-full items-center justify-center cursor-pointer rounded-md bg-transparent text-sm font-medium text-primary hover:bg-[#eee4cf]">
+                      See all devices
+                      <MoreHorizontal className="ml-1 h-4 w-4" />
+                    </DialogTrigger>
+                  ) : null}
+
+                  <DialogContent className="border-[#d8cfbd] bg-[#f8f0df]">
+                    <DialogHeader>
+                      <DialogTitle className="text-[#3c2d11]">
+                        Visits by device
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-2">
+                      {urlDetails?.device_visits?.map(
+                        ({ deviceType, count }) => (
+                          <div
+                            key={deviceType}
+                            className="flex items-center justify-between rounded-lg bg-white/50 px-4 py-3"
+                          >
+                            <span className="text-sm font-medium text-gray-700">
+                              {deviceType}
+                            </span>
+
+                            <span className="text-sm font-semibold text-[#3c2d11]">
+                              {count}
+                            </span>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              {/* Location Analytics */}
+              <div className="rounded-2xl border border-[#d8cfbd] bg-white/40 p-5">
+                <div className="mb-5 flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#3c2d11]">
+                      Top locations
+                    </p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Where your URL is being visited
+                    </p>
+                  </div>
+
+                  <MapPin
+                    size={20}
+                    strokeWidth={1.7}
+                    className="text-[#3c2d11]"
+                  />
+                </div>
+
+                {/* Primary location */}
+                <div className="rounded-xl border border-[#d8cfbd] bg-[#f8f0df]/70 p-4">
+                  <p className="text-center text-2xl font-semibold text-[#3c2d11]">
+                    {urlDetails?.city_visits?.length
+                      ? urlDetails?.city_visits[0]?.count
+                      : "--"}
+                  </p>
+                  <p className="text-center mt-1 text-xs text-gray-500">
+                    {urlDetails?.city_visits?.length
+                      ? urlDetails?.city_visits[0]?.city +
+                        ", " +
+                        urlDetails?.city_visits[0]?.country
+                      : null}
+                  </p>
+                </div>
+
+                <Dialog>
+                  {urlDetails?.city_visits?.length ? (
+                    // <DialogTrigger className="w-full flex justify-center mt-3 h-9 text-xs text-[#3c2d11] hover:bg-[#eee4cf]">
+                    <DialogTrigger className="mt-3 flex h-9 w-full items-center justify-center rounded-md bg-transparent text-sm font-medium text-primary cursor-pointer hover:bg-[#eee4cf]">
+                      See all locations
+                      <MoreHorizontal className="ml-1 h-4 w-4 shrink-0" />
+                    </DialogTrigger>
+                  ) : null}
+
+                  <DialogContent className="border-[#d8cfbd] bg-[#f8f0df]">
+                    <DialogHeader>
+                      <DialogTitle className="text-[#3c2d11]">
+                        Visits by location
+                      </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-2">
+                      {urlDetails?.city_visits?.map(
+                        ({ city, count, country }) => (
+                          <div
+                            key={city}
+                            className="flex items-center justify-between rounded-lg bg-white/50 px-4 py-3"
+                          >
+                            <span className="text-sm font-medium text-gray-700">
+                              {city + ", " + country}
+                            </span>
+
+                            <span className="text-sm font-semibold text-[#3c2d11]">
+                              {count}
+                            </span>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              {/* QR Code Coming Soon */}
+              <div className="flex min-h-[230px] flex-col justify-between rounded-2xl border border-dashed border-[#cfc3ab] bg-[#eee4cf]/40 p-5">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-[#3c2d11]">
+                      QR code
+                    </p>
+
+                    <p className="mt-1 text-xs leading-5 text-gray-500">
+                      Generate a QR code for your short URL and share it
+                      anywhere.
+                    </p>
+                  </div>
+
+                  <QrCode
+                    size={22}
+                    strokeWidth={1.7}
+                    className="text-[#3c2d11]"
+                  />
+                </div>
+
+                <div>
+                  <span className="inline-flex rounded-full bg-[#3c2d11]/10 px-3 py-1 text-xs font-medium text-[#3c2d11]">
+                    Coming soon
+                  </span>
+
+                  <p className="mt-3 text-xs text-gray-500">
+                    Quickly generate and download a QR code for this URL.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -677,36 +788,6 @@ function Stat({
       <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
 
       <p className="mt-1 text-xs text-gray-400">{description}</p>
-    </div>
-  );
-}
-
-function ComingSoonCard({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="relative min-h-40 overflow-hidden border border-gray-300/70 p-6">
-      <div className="absolute right-5 top-5 rounded-full border border-gray-300 px-3 py-1 text-[10px] font-medium uppercase tracking-wider text-gray-400">
-        Coming soon
-      </div>
-
-      <div className="flex h-full flex-col justify-between gap-8">
-        <div className="text-gray-400">{icon}</div>
-
-        <div>
-          <h3 className="text-lg font-medium">{title}</h3>
-
-          <p className="mt-1 max-w-md text-sm leading-6 text-gray-500">
-            {description}
-          </p>
-        </div>
-      </div>
     </div>
   );
 }
