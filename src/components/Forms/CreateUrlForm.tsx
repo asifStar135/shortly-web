@@ -165,7 +165,7 @@ export default function CreateUrlForm() {
 
       <button
         type="submit"
-        className="rounded-lg bg-zinc-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800"
+        className="rounded-lg cursor-pointer bg-zinc-950 px-5 py-3 text-sm font-medium text-white transition hover:bg-zinc-800"
       >
         Create shortLy URL →
       </button>

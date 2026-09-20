@@ -212,14 +212,14 @@ export default function ProfilePage() {
 
                       <button
                         onClick={saveUsername}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#111111] text-white transition-opacity hover:opacity-80"
+                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#111111] text-white transition-opacity hover:opacity-80"
                       >
                         <Check size={16} />
                       </button>
 
                       <button
                         onClick={cancelUsernameEdit}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-white/50"
+                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-white/50"
                       >
                         <X size={16} />
                       </button>
@@ -235,7 +235,7 @@ export default function ProfilePage() {
                         setUsernameDraft(user?.username || "");
                         setEditingUsername(true);
                       }}
-                      className="text-sm font-medium text-[#735b25] underline decoration-[#cdbb8f] underline-offset-4 hover:text-[#3c2d11]"
+                      className="text-sm cursor-pointer font-medium text-[#735b25] underline decoration-[#cdbb8f] underline-offset-4 hover:text-[#3c2d11]"
                     >
                       Edit
                     </button>
@@ -267,14 +267,14 @@ export default function ProfilePage() {
 
                       <button
                         onClick={saveEmail}
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#111111] text-white transition-opacity hover:opacity-80"
+                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#111111] text-white transition-opacity hover:opacity-80"
                       >
                         <Check size={16} />
                       </button>
 
                       <button
                         onClick={cancelEmailEdit}
-                        className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-white/50"
+                        className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-colors hover:bg-white/50"
                       >
                         <X size={16} />
                       </button>
@@ -290,7 +290,7 @@ export default function ProfilePage() {
                         setEmailDraft(user?.email || "");
                         setEditingEmail(true);
                       }}
-                      className="text-sm font-medium text-[#735b25] underline decoration-[#cdbb8f] underline-offset-4 hover:text-[#3c2d11]"
+                      className="text-sm font-medium cursor-pointer text-[#735b25] underline decoration-[#cdbb8f] underline-offset-4 hover:text-[#3c2d11]"
                     >
                       Edit
                     </button>
@@ -393,7 +393,7 @@ export default function ProfilePage() {
 
               <button
                 onClick={() => setLogoutDialog(true)}
-                className="w-fit rounded-full border border-gray-300 px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/50"
+                className="w-fit rounded-full cursor-pointer border border-gray-300 px-5 py-2.5 text-sm font-medium transition-all hover:bg-white/50"
               >
                 Sign out
               </button>
@@ -419,7 +419,7 @@ export default function ProfilePage() {
 
                 <button
                   onClick={() => setDeleteDialog(true)}
-                  className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-red-300 px-5 py-2.5 text-sm font-medium text-red-600 transition-all hover:bg-red-100"
+                  className="inline-flex w-fit cursor-pointer shrink-0 items-center gap-2 rounded-full border border-red-300 px-5 py-2.5 text-sm font-medium text-red-600 transition-all hover:bg-red-100"
                 >
                   <Trash2 size={16} />
                   Delete account
@@ -607,14 +607,14 @@ function ConfirmDialog({
         <div className="mt-7 flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="rounded-full border border-gray-300 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white/50"
+            className="rounded-full cursor-pointer border border-gray-300 px-5 py-2.5 text-sm font-medium transition-colors hover:bg-white/50"
           >
             Cancel
           </button>
 
           <button
             onClick={onConfirm}
-            className={`rounded-full px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-85 ${
+            className={`rounded-full cursor-pointer px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-85 ${
               destructive ? "bg-red-600" : "bg-[#111111]"
             }`}
           >
