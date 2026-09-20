@@ -95,7 +95,7 @@ const RegisterForm = () => {
 
         <button
           type="submit"
-          className="h-11 w-full rounded-lg bg-zinc-950 text-sm font-medium text-white transition hover:bg-zinc-800"
+          className="h-11 cursor-pointer w-full rounded-lg bg-zinc-950 text-sm font-medium text-white transition hover:bg-zinc-800"
         >
           Create my account →
         </button>

@@ -303,7 +303,7 @@ export default function MyUrlsPage() {
 
                         {/* Visits */}
                         <td className="px-5 py-5 text-sm font-medium">
-                          {url?.today_visit?.toLocaleString()}
+                          {url?.total_visit?.toLocaleString()}
                         </td>
 
                         {/* Created */}
@@ -354,7 +354,7 @@ export default function MyUrlsPage() {
                       <button
                         key={pageNumber}
                         onClick={() => setPage(pageNumber)}
-                        className={`hidden h-10 w-10 items-center justify-center rounded-full text-sm sm:flex ${
+                        className={`hidden cursor-pointer h-10 w-10 items-center justify-center rounded-full text-sm sm:flex ${
                           page === pageNumber
                             ? "bg-[#111111] text-white"
                             : "text-gray-600 hover:bg-white/50"
@@ -368,7 +368,7 @@ export default function MyUrlsPage() {
                   <button
                     disabled={page === totalPages}
                     onClick={() => setPage((p) => p + 1)}
-                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 transition-all hover:bg-white/50 disabled:cursor-not-allowed disabled:opacity-30"
+                    className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-gray-300 transition-all hover:bg-white/50 disabled:cursor-not-allowed disabled:opacity-30"
                   >
                     <ChevronRight size={17} />
                   </button>

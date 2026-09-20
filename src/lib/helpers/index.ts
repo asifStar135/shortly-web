@@ -17,3 +17,10 @@ export const validateUrl = (url: string) => {
     return false;
   }
 };
+
+export const displayLocation = (country: string, city: string) => {
+  if (!country?.trim() && !city?.trim()) return "Unknown";
+  if (!city?.trim()) return country;
+
+  return `${city}, ${country}`;
+};

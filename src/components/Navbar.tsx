@@ -59,7 +59,7 @@ export default function Navbar() {
           <div className="relative ml-2">
             <button
               onClick={() => setProfileOpen((prev) => !prev)}
-              className="flex items-center gap-2 rounded-full border border-[#756642] px-3 py-2 transition-colors hover:bg-[#4a3918]"
+              className="flex items-center gap-2 cursor-pointer rounded-full border border-[#756642] px-3 py-2 transition-colors hover:bg-[#4a3918]"
               aria-label="Profile menu"
             >
               <User size={17} strokeWidth={1.8} />
@@ -87,7 +87,7 @@ export default function Navbar() {
                     setProfileOpen(false);
                     handleLogout();
                   }}
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm text-[#e5dcc9] hover:bg-[#4a3918] hover:text-white"
+                  className="flex w-full items-center cursor-pointer gap-3 px-4 py-3 text-sm text-[#e5dcc9] hover:bg-[#4a3918] hover:text-white"
                 >
                   <LogOut size={16} onClick={handleLogout} />
                   Logout
@@ -100,7 +100,7 @@ export default function Navbar() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setMobileOpen((prev) => !prev)}
-          className="rounded-lg p-2 transition-colors hover:bg-[#4a3918] md:hidden"
+          className="rounded-lg p-2 cursor-pointer transition-colors hover:bg-[#4a3918] md:hidden"
           aria-label="Toggle navigation"
         >
           {mobileOpen ? <X size={23} /> : <Menu size={23} />}
@@ -133,7 +133,7 @@ export default function Navbar() {
             </Link>
 
             <button
-              className="flex items-center gap-3 py-4 text-left text-sm text-[#e5dcc9] hover:text-white"
+              className="flex items-center gap-3 py-4 cursor-pointer text-left text-sm text-[#e5dcc9] hover:text-white"
               onClick={() => {
                 setMobileOpen(false);
                 handleLogout();

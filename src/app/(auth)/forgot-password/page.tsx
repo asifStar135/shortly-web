@@ -114,7 +114,7 @@ export default function ForgotPasswordPage() {
 
               <button
                 type="submit"
-                className="h-12 w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
+                className="h-12 cursor-pointer w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
               >
                 Send reset code
               </button>
@@ -184,7 +184,7 @@ export default function ForgotPasswordPage() {
 
               <button
                 type="submit"
-                className="h-12 w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
+                className="h-12 cursor-pointer w-full rounded-xl bg-[#3c2d11] text-sm font-medium text-[#f8f0df] transition hover:opacity-90"
               >
                 Reset password
               </button>
@@ -197,7 +197,7 @@ export default function ForgotPasswordPage() {
               <button
                 type="button"
                 onClick={() => setIsCodeStep(false)}
-                className="inline-flex items-center gap-2 text-sm text-gray-500 transition hover:text-[#3c2d11]"
+                className="inline-flex cursor-pointer items-center gap-2 text-sm text-gray-500 transition hover:text-[#3c2d11]"
               >
                 <ArrowLeft size={15} />
                 Change email
