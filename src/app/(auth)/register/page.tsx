@@ -4,12 +4,12 @@ import Image from "next/image";
 export default function RegisterPage() {
   return (
     <main className="min-h-screen bg-[#f8f0e0] text-zinc-950">
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-6">
+      <div className="mx-auto pt-10 flex min-h-screen max-w-6xl flex-col px-6">
         {/* Header */}
         <header className="flex h-20 items-center justify-between">
           <a href="/home" className="text-2xl font-semibold tracking-tight">
             <Image
-              src="/images/brandicon.png"
+              src="/images/brand_dark.png"
               alt="Shortify-brand"
               height={100}
               width={250}
