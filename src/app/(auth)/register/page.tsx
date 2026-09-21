@@ -1,4 +1,5 @@
 import RegisterForm from "@/components/Forms/RegisterForm";
+import Image from "next/image";
 
 export default function RegisterPage() {
   return (
@@ -7,7 +8,12 @@ export default function RegisterPage() {
         {/* Header */}
         <header className="flex h-20 items-center justify-between">
           <a href="/home" className="text-2xl font-semibold tracking-tight">
-            shortLy
+            <Image
+              src="/images/brandicon.png"
+              alt="Shortify-brand"
+              height={100}
+              width={250}
+            />
           </a>
 
           <a
