@@ -35,17 +35,17 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-[#5a4a29] bg-[#3c2d11] text-[#f8f0df]">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-6 md:px-10">
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 md:px-10">
         {/* Logo */}
         <Link
           href="/home"
           className="flex items-center gap-2 text-2xl font-bold tracking-tight transition-opacity hover:opacity-80"
         >
           <Image
-            src="/images/brandicon.png"
+            src="/images/brand_light.png"
             alt="Shortly-brand"
-            height={40}
-            width={100}
+            height={100}
+            width={250}
           />
         </Link>
 

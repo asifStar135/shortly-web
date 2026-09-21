@@ -9,7 +9,7 @@ export default function LoginPage() {
         <header className="flex h-20 items-center justify-between">
           <a href="/home" className="text-2xl font-semibold tracking-tight">
             <Image
-              src="/images/brandicon.png"
+              src="/images/brand_dark.png"
               alt="Shortify-brand"
               height={100}
               width={250}
