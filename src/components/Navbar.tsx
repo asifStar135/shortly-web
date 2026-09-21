@@ -6,6 +6,7 @@ import { ChevronDown, Link2, LogOut, Menu, User, X } from "lucide-react";
 import { logoutUser } from "@/actions";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const navLinks = [
   { label: "Create URL", href: "/shorten" },
@@ -40,7 +41,12 @@ export default function Navbar() {
           href="/home"
           className="flex items-center gap-2 text-2xl font-bold tracking-tight transition-opacity hover:opacity-80"
         >
-          <span>shortLy</span>
+          <Image
+            src="/images/brandicon.png"
+            alt="Shortly-brand"
+            height={40}
+            width={100}
+          />
         </Link>
 
         {/* Desktop Navigation */}
